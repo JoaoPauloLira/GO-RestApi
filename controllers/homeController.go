@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"go-rest-api/database"
 	"go-rest-api/models"
 	"net/http"
-	"strconv"
 )
 
 func Home(w http.ResponseWriter, r *http.Request) {
@@ -14,17 +14,35 @@ func Home(w http.ResponseWriter, r *http.Request) {
 }
 
 func TodasPersonalidades(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(models.Personalidades)
+
+	var personalidades []models.Personalidade
+
+	database.DB.Find(&personalidades)
+
+	json.NewEncoder(w).Encode(personalidades)
 }
 
 func RetornaUmaPersonalidade(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	for _, personalidade := range models.Personalidades {
-		if strconv.Itoa(personalidade.ID) == id {
-			json.NewEncoder(w).Encode(personalidade)
-		}
-	}
+	var personalidade models.Personalidade
 
+	database.DB.First(&personalidade, id)
+	json.NewEncoder(w).Encode(personalidade)
+}
+
+func CriarUmaNovaPersonalidade(w http.ResponseWriter, r *http.Request) {
+	var novaPersonalidade models.Personalidade
+	json.NewDecoder(r.Body).Decode(&novaPersonalidade)
+	database.DB.Create(&novaPersonalidade)
+	json.NewEncoder(w).Encode(novaPersonalidade)
+}
+
+func DeletaUmaPersonalidade(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	var personalidade models.Personalidade
+	database.DB.Delete(&personalidade, id)
+	json.NewEncoder(w).Encode(personalidade)
 }

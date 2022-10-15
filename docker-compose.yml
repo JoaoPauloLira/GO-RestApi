@@ -17,6 +17,6 @@ services:
       PGADMIN_DEFAULT_EMAIL: "jp@newtec.com"
       PGADMIN_DEFAULT_PASSWORD: "123456"
     ports:
-      - "54321:80"
+      - "16543:80"
     depends_on:
       - postgres
