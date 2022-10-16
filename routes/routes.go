@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"go-rest-api/controllers"
 	"go-rest-api/middleware"
@@ -31,5 +32,5 @@ func HandleRequest() {
 
 	r.HandleFunc("/api/personalidades/{id}", controllers.EditaPersonalidade).Methods(PUT)
 
-	log.Fatal(http.ListenAndServe(":8000", r))
+	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r)))
 }
